@@ -28,10 +28,16 @@ const CurrentWeather = ({ data }) => {
       timeZone: "UTC" // Set the specific timezone here
     });
 
+    const dayFormatter = new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      timeZone: "UTC" // Set the specific timezone here
+    });
+
     const formattedTime = timeFormatter.format(timeInTimeZone);
     const formattedDate = dateFormatter.format(timeInTimeZone);
+    const formattedDay = dayFormatter.format(timeInTimeZone);
 
-    return { time: formattedTime, date: formattedDate };
+    return { time: formattedTime, date: formattedDate, day: formattedDay };
   };
 
   const timeInTimeZone = getTimeInTimeZone(currentTime, offsetSeconds);
@@ -89,7 +95,8 @@ const CurrentWeather = ({ data }) => {
                         </div>
                         <div>
                         <p className="text-muted mb-0">{timeInTimeZone.time}</p>
-                    <p className="text-muted mb-0">{timeInTimeZone.date}</p>
+                        <p className="text-muted mb-0">{timeInTimeZone.day}</p>
+                        <p className="text-muted mb-0">{timeInTimeZone.date}</p>
                         </div>
                       </div>
                     </div>
