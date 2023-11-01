@@ -2,18 +2,40 @@ import React, { useState, useEffect } from "react";
 
 const CurrentWeather = ({ data }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const offsetSeconds = data.timezone || 0; // Example offset in seconds
 
   useEffect(() => {
-    // Update the current time every second
     const interval = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
 
-    // Clear the interval on component unmount
     return () => {
       clearInterval(interval);
     };
   }, []);
+
+  const getTimeInTimeZone = (time, offsetSeconds) => {
+    const offsetMilliseconds = offsetSeconds * 1000; // Convert seconds to milliseconds
+    const timeInTimeZone = new Date(time.getTime() + offsetMilliseconds);
+
+    const timeFormatter = new Intl.DateTimeFormat("en-US", {
+      timeStyle: "medium",
+      timeZone: "UTC" // Set the specific timezone here
+    });
+
+    const dateFormatter = new Intl.DateTimeFormat("en-US", {
+      dateStyle: "medium",
+      timeZone: "UTC" // Set the specific timezone here
+    });
+
+    const formattedTime = timeFormatter.format(timeInTimeZone);
+    const formattedDate = dateFormatter.format(timeInTimeZone);
+
+    return { time: formattedTime, date: formattedDate };
+  };
+
+  const timeInTimeZone = getTimeInTimeZone(currentTime, offsetSeconds);
+
   return (
     <section>
          <div
@@ -66,17 +88,8 @@ const CurrentWeather = ({ data }) => {
                           </p>
                         </div>
                         <div>
-                          <p className="text-muted mb-0 ">
-                            {currentTime.toLocaleTimeString()}
-                          </p>
-                          <p className="text-muted mb-0 ">
-                            {currentTime.toLocaleDateString(undefined, {
-                              weekday: "long",
-                            })}
-                          </p>
-                          <p className="text-muted mb-0 ">
-                            {currentTime.toLocaleDateString()}
-                          </p>
+                        <p className="text-muted mb-0">{timeInTimeZone.time}</p>
+                    <p className="text-muted mb-0">{timeInTimeZone.date}</p>
                         </div>
                       </div>
                     </div>
